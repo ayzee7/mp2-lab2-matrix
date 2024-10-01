@@ -8,6 +8,7 @@
 #define __TDynamicMatrix_H__
 
 #include <iostream>
+#include <exception>
 
 using namespace std;
 
@@ -25,8 +26,10 @@ protected:
 public:
   TDynamicVector(size_t size = 1) : sz(size)
   {
-    if (sz == 0)
-      throw out_of_range("Vector size should be greater than zero");
+      if (sz == 0)
+          throw out_of_range("Vector size should be greater than zero");
+      if (sz > MAX_VECTOR_SIZE)
+          throw out_of_range("Exceeded maximum vector size");
     pMem = new T[sz]();// {}; // У типа T д.б. констуктор по умолчанию
   }
   TDynamicVector(T* arr, size_t s) : sz(s)
@@ -37,18 +40,41 @@ public:
   }
   TDynamicVector(const TDynamicVector& v)
   {
+      sz = v.sz;
+      pMem = new T[sz];
+      memcpy(pMem, v.pMem, sz);
   }
   TDynamicVector(TDynamicVector&& v) noexcept
   {
+      sz = v.sz;
+      v.sz = 0;
+      pMem = v.pMem;
+      v.pMem = nullptr;
   }
   ~TDynamicVector()
   {
+      delete[] pMem;
   }
   TDynamicVector& operator=(const TDynamicVector& v)
   {
+      if (&v != this) {
+          sz = v.sz;
+          delete[] pMem;
+          pMem = new T[sz];
+          for (int i = 0; i < sz; i++) {
+              pMem[i] = v.pMem[i];
+          }
+      }
+      return *this;
   }
   TDynamicVector& operator=(TDynamicVector&& v) noexcept
   {
+      if (&v != this) {
+          pMem = v.pMem;
+          v.pMem = nullptr;
+          sz = v.sz;
+          v.sz = 0;
+      }
       return *this;
   }
 
@@ -57,46 +83,115 @@ public:
   // индексация
   T& operator[](size_t ind)
   {
+      return pMem[ind];
   }
   const T& operator[](size_t ind) const
   {
+      return pMem[ind];
   }
   // индексация с контролем
   T& at(size_t ind)
   {
+      if (ind < 0 || ind >= sz) {
+          throw exception("Out of bounds index");
+      }
+      return pMem[ind];
   }
   const T& at(size_t ind) const
   {
+      if (ind < 0 || ind >= sz) {
+          throw exception("Out of bounds index");
+      }
+      return pMem[ind];
   }
 
   // сравнение
   bool operator==(const TDynamicVector& v) const noexcept
   {
+      int cmpres = memcmp(pMem, v.pMem, sz);
+      if (sz != v.sz) {
+          return false;
+      }
+      else if (cmpres) {
+          return false;
+      }
+      else {
+          return true;
+      }
   }
   bool operator!=(const TDynamicVector& v) const noexcept
   {
+      int cmpres = memcmp(pMem, v.pMem, sz);
+      if (sz != v.sz) {
+          return true;
+      }
+      else if (cmpres) {
+          return true;
+      }
+      else {
+          return false;
+      }
   }
 
   // скалярные операции
   TDynamicVector operator+(T val)
   {
+      TDynamicVector res(sz);
+      for (int i = 0; i < sz; i++) {
+          res[i] = pMem[i] + val;
+      }
+      return res;
   }
-  TDynamicVector operator-(double val)
+  TDynamicVector operator-(T val)
   {
+      TDynamicVector res(sz);
+      for (int i = 0; i < sz; i++) {
+          res[i] = pMem[i] - val;
+      }
+      return res;
   }
-  TDynamicVector operator*(double val)
+  TDynamicVector operator*(T val)
   {
+      TDynamicVector res(sz);
+      for (int i = 0; i < sz; i++) {
+          res[i] = pMem[i] * val;
+      }
+      return res;
   }
 
   // векторные операции
   TDynamicVector operator+(const TDynamicVector& v)
   {
+      if (sz != v.sz) {
+          throw exception("Invalid vector size");
+      }
+      TDynamicVector res(sz);
+      for (int i = 0; i < sz; i++) {
+          res[i] = pMem[i] + v.pMem[i];
+      }
+      return res;
   }
   TDynamicVector operator-(const TDynamicVector& v)
   {
+      if (sz != v.sz) {
+          throw exception("Invalid vector size");
+      }
+      TDynamicVector res(sz);
+      for (int i = 0; i < sz; i++) {
+          res[i] = pMem[i] - v.pMem[i];
+      }
+      return res;
   }
   T operator*(const TDynamicVector& v) noexcept(noexcept(T()))
   {
+      if (sz != v.sz) {
+          throw exception("Invalid vector size");
+      }
+      T res = 0;
+      for (int i = 0; i < sz; i++) {
+          res += pMem[i] * v.pMem[i];
+      }
+      return res;
   }
 
   friend void swap(TDynamicVector& lhs, TDynamicVector& rhs) noexcept
