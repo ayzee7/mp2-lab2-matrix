@@ -214,3 +214,49 @@ TEST(TDynamicVector, cant_multiply_vectors_with_not_equal_size)
 TEST(TDynamicVector, cant_create_vector_with_null_length) {
 	ASSERT_ANY_THROW(TDynamicVector<int> v(0));
 }
+
+TEST(TDynamicVector, can_move_vector) {
+	ASSERT_NO_THROW(TDynamicVector<int> v(TDynamicVector<int>(10)));
+}
+
+TEST(TDynamicVector, can_assign_move_vector) {
+	TDynamicVector<int> v(10);
+	ASSERT_NO_THROW(TDynamicVector<int> v1 = std::move(v));
+}
+
+TEST(TDynamicVector, moved_vector_has_no_memory_pointer) {
+	TDynamicVector<int> v(10);
+	TDynamicVector<int> v1 = std::move(v);
+	EXPECT_TRUE(v.isEmpty());
+}
+
+TEST(TDynamicVector, vector_memory_pointer_moved_to_new_one) {
+	TDynamicVector<int> v(10);
+	int* pv = &v[0];
+	TDynamicVector<int> v1 = std::move(v);
+	ASSERT_EQ(pv, &v1[0]);
+}
+
+TEST(TDynamicVector, moved_vector_equal_to_source) {
+	TDynamicVector<int> v(3);
+	v[0] = 1;
+	v[1] = 2;
+	v[2] = 3;
+	TDynamicVector<int> v_copy(v);
+	TDynamicVector<int> v1 = std::move(v);
+	ASSERT_EQ(v_copy, v1);
+}
+
+TEST(TDynamicVector, can_swap_vectors) {
+	TDynamicVector<int> v1(2);
+	TDynamicVector<int> v2(2);
+	//	v1 = {1, 2}, v2 = {3, 4}
+	v1[0] = 1;
+	v1[1] = 2;
+	v2[0] = 3;
+	v2[1] = 4;
+	//	v3 = v1
+	TDynamicVector<int> v3(v1);
+	swap(v1, v2);
+	ASSERT_EQ(v2, v3);
+}

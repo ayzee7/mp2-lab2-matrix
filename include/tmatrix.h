@@ -182,7 +182,7 @@ public:
       }
       return res;
   }
-  T operator*(const TDynamicVector& v) noexcept(noexcept(T()))
+  T operator*(const TDynamicVector& v) //noexcept(noexcept(T()))
   {
       if (sz != v.sz) {
           throw exception("Invalid vector size");
@@ -192,6 +192,10 @@ public:
           res += pMem[i] * v.pMem[i];
       }
       return res;
+  }
+
+  bool isEmpty() {
+      return pMem == nullptr;
   }
 
   friend void swap(TDynamicVector& lhs, TDynamicVector& rhs) noexcept
@@ -275,6 +279,8 @@ public:
 
   using TDynamicVector<TDynamicVector<T>>::at;
 
+  using TDynamicVector<TDynamicVector<T>>::isEmpty;
+
   // сравнение
   bool operator==(const TDynamicMatrix& m) const noexcept
   {
@@ -323,7 +329,7 @@ public:
   // матрично-векторные операции
   TDynamicVector<T> operator*(const TDynamicVector<T>& v)
   {
-      if (sz != v.sz) {
+      if (sz != v.size()) {
           throw exception("Invalid vector size");
       }
       TDynamicVector<T> res(sz);
@@ -374,16 +380,16 @@ public:
   }
 
   // ввод/вывод
-  friend istream& operator>>(istream& istr, TDynamicMatrix& v)
+  friend istream& operator>>(istream& istr, TDynamicMatrix& m)
   {
       for (size_t i = 0; i < v.sz; i++)
-          istr >> v.pMem[i]; 
+          istr >> m.pMem[i]; 
       return istr;
   }
-  friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& v)
+  friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& m)
   {
-      for (size_t i = 0; i < v.sz; i++)
-          ostr << v.pMem[i] << endl;
+      for (size_t i = 0; i < m.sz; i++)
+          ostr << m.pMem[i] << endl;
       return ostr;
   }
 };
