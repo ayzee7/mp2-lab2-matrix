@@ -8,7 +8,8 @@
 #define __TDynamicMatrix_H__
 
 #include <iostream>
-#include <exception>
+#include <cstring>
+//#include <exception>
 
 using namespace std;
 
@@ -93,14 +94,14 @@ public:
   T& at(size_t ind)
   {
       if (ind < 0 || ind >= sz) {
-          throw exception("Out of bounds index");
+          throw "Out of bounds index";
       }
       return pMem[ind];
   }
   const T& at(size_t ind) const
   {
       if (ind < 0 || ind >= sz) {
-          throw exception("Out of bounds index");
+          throw "Out of bounds index";
       }
       return pMem[ind];
   }
@@ -163,7 +164,7 @@ public:
   TDynamicVector operator+(const TDynamicVector& v)
   {
       if (sz != v.sz) {
-          throw exception("Invalid vector size");
+          throw "Invalid vector size";
       }
       TDynamicVector res(sz);
       for (size_t i = 0; i < sz; i++) {
@@ -174,7 +175,7 @@ public:
   TDynamicVector operator-(const TDynamicVector& v)
   {
       if (sz != v.sz) {
-          throw exception("Invalid vector size");
+          throw "Invalid vector size";
       }
       TDynamicVector res(sz);
       for (size_t i = 0; i < sz; i++) {
@@ -185,7 +186,7 @@ public:
   T operator*(const TDynamicVector& v) //noexcept(noexcept(T()))
   {
       if (sz != v.sz) {
-          throw exception("Invalid vector size");
+          throw "Invalid vector size";
       }
       T res = 0;
       for (size_t i = 0; i < sz; i++) {
@@ -330,7 +331,7 @@ public:
   TDynamicVector<T> operator*(const TDynamicVector<T>& v)
   {
       if (sz != v.size()) {
-          throw exception("Invalid vector size");
+          throw "Invalid vector size";
       }
       TDynamicVector<T> res(sz);
       for (size_t i = 0; i < sz; i++) {
@@ -344,7 +345,7 @@ public:
   TDynamicMatrix operator+(const TDynamicMatrix& m)
   {
       if (sz != m.sz) {
-          throw exception("Invalid matrix size");
+          throw "Invalid matrix size";
       }
       TDynamicMatrix res(sz);
       for (size_t i = 0; i < sz; i++) {
@@ -355,7 +356,7 @@ public:
   TDynamicMatrix operator-(const TDynamicMatrix& m)
   {
       if (sz != m.sz) {
-          throw exception("Invalid matrix size");
+          throw "Invalid matrix size";
       }
       TDynamicMatrix res(sz);
       for (size_t i = 0; i < sz; i++) {
@@ -366,7 +367,7 @@ public:
   TDynamicMatrix operator*(const TDynamicMatrix& m)
   {
       if (sz != m.sz) {
-          throw exception("Invalid matrix size");
+          throw "Invalid matrix size";
       }
       TDynamicMatrix res(sz);
       for (size_t i = 0; i < sz; i++) {
