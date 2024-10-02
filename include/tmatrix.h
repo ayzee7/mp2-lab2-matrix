@@ -382,7 +382,7 @@ public:
   // ввод/вывод
   friend istream& operator>>(istream& istr, TDynamicMatrix& m)
   {
-      for (size_t i = 0; i < v.sz; i++)
+      for (size_t i = 0; i < m.sz; i++)
           istr >> m.pMem[i]; 
       return istr;
   }
